@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client/extension';
+import { PrismaClient } from '@prisma/client/edge';
 import { withAccelerate } from '@prisma/extension-accelerate';
 import { Context } from 'hono';
 import { sign } from 'hono/jwt'
@@ -9,6 +9,8 @@ const registerUser = async (c: Context) => {
     }).$extends(withAccelerate())
 
     const body = await c.req.json();
+    console.log(body);
+    
 
     const existingUser = await prisma.user.findUnique({
         where: { email: body.email },
@@ -25,6 +27,8 @@ const registerUser = async (c: Context) => {
             password: body.password
         }
     })
+    console.log(user);
+    
 
     const token = await sign({id: user.id}, c.env.JWT_SECRET)
 
